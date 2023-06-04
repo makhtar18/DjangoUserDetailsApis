@@ -11,3 +11,19 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['email'], validated_data['first_name'], validated_data['last_name'], validated_data['phone_number'], validated_data['password'])
         return user
     
+class UserDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= UserDetail
+        fields = ('age', 'dob', 'profession', 'address', 'hobby')
+
+    def create(self, validated_data):
+        userId = self.context['userId']
+        userDetail = UserDetail()
+        userDetail.age = validated_data['age']
+        userDetail.dob = validated_data['dob']
+        userDetail.profession = validated_data['profession']
+        userDetail.address = validated_data['address']
+        userDetail.hobby = validated_data['hobby']
+        userDetail.user_id = userId
+        userDetail.save()
+        return userDetail

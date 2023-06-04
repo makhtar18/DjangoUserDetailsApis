@@ -8,16 +8,16 @@ class UserAdminConfig(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     list_filter = ('email', 'first_name', 'last_name', 'is_active', 'is_staff')
     ordering = ('email',)
-    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'is_active', 'is_staff')
+    list_display = ('id', 'email', 'first_name', 'last_name', 'phone_number', 'is_active', 'is_staff', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('email', 'first_name', 'last_name',)}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')}),
         ('Personal', {'fields': ('phone_number',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2', 'is_active', 'is_staff')}
+            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser')}
          ),
     )
 

@@ -9,7 +9,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    phone_number = models.CharField(max_length=11, null =True, blank=True)
+    phone_number = models.CharField(max_length=11)
 
     objects = UserManager()
 
@@ -18,12 +18,12 @@ class User(AbstractUser):
 
 
 class UserDetail(models.Model):
-    age: models.IntegerField
-    dob: models.DateField
-    profession: models.CharField(max_length=150)
-    address: models.CharField(max_length=500)
-    hobby: models.CharField(max_length=150)
-    user: models.ForeignKey(User, on_delete=models.CASCADE)
+    age = models.IntegerField()
+    dob = models.DateField()
+    profession = models.CharField(max_length=150)
+    address = models.CharField(max_length=500)
+    hobby = models.CharField(max_length=150)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, blank=True)
 
     def __str__(self):
         return self.user.first_name
