@@ -27,3 +27,28 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         userDetail.user_id = userId
         userDetail.save()
         return userDetail
+    
+
+class UpdateUserDetailsSerializer(serializers.ModelSerializer):
+    age = serializers.IntegerField(required=False)
+    dob = serializers.DateField(required=False)
+    profession = serializers.CharField(max_length=150, required=False)
+    address = serializers.CharField(max_length=500, required=False)
+    hobby = serializers.CharField(max_length=150, required=False)
+    class Meta:
+        model= UserDetail
+        fields = ('age', 'dob', 'profession', 'address', 'hobby')
+
+    def create(self, validated_data):
+        userId = self.context['userId']
+        userDetail = UserDetail()
+        userDetail.age = validated_data['age']
+        userDetail.dob = validated_data['dob']
+        userDetail.profession = validated_data['profession']
+        userDetail.address = validated_data['address']
+        userDetail.hobby = validated_data['hobby']
+        userDetail.user_id = userId
+        userDetail.save()
+        return userDetail
+    
+

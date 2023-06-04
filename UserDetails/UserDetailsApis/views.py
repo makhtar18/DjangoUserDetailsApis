@@ -10,9 +10,11 @@ from rest_framework_simplejwt.tokens import AccessToken, TokenError
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializer, UserDetailsSerializer
+from .serializers import UserSerializer, UserDetailsSerializer, UpdateUserDetailsSerializer
 from .models import User, UserDetail
 
+
+# Create your views here.
 
 def getTokenDetails(bearer_token):
     token = bearer_token.split()[1]
@@ -24,8 +26,6 @@ def getTokenDetails(bearer_token):
     except TokenError:
         raise TokenError
       
-
-# Create your views here.
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -91,8 +91,8 @@ def updateUser(request):
     try:
         user_details = UserDetail.objects.get(user=user_id)
     except UserDetail.DoesNotExist:
-        return JsonResponse("Unable to update as user details for the user does not exist", status=400, safe=False) 
-    user_details_serializer = UserDetailsSerializer(user_details, data=user_details_data)
+        return JsonResponse("Unable to update as details for the user does not exist", status=400, safe=False) 
+    user_details_serializer = UpdateUserDetailsSerializer(user_details, data=user_details_data)
     if(user_details_serializer.is_valid()):
         try:
             user_details_serializer.save()
