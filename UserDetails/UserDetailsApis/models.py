@@ -15,3 +15,15 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name','last_name','phone_number']
+
+
+class UserDetail(models.Model):
+    age: models.IntegerField
+    dob: models.DateField
+    profession: models.CharField(max_length=150)
+    address: models.CharField(max_length=500)
+    hobby: models.CharField(max_length=150)
+    user: models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.first_name
