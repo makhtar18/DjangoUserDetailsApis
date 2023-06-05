@@ -16,11 +16,11 @@ This project consists of follwing APIs:
 
 Sample Response:
   Status Code : 201 Created
-  "Signed Up Successfully"
+  {"message":"Signed Up Successfully"}
 
 2)**Login API**: is used to login a user
 
-Endpoint: /login: 
+Endpoint: /login
 Mandatory Fields: email, password
   Sample Request: 
   {
@@ -37,7 +37,7 @@ Mandatory Fields: email, password
 
 3)**Add User Details API**: Is used to add details for a particular user
 
-Endpoint: /addUserDetails: 
+Endpoint: /addUserDetails
 Request Header: Authorization: Bearer <access_token>
 Mandatory Fields: age, dob, profession, address, hobby
   Sample Request: 
@@ -51,7 +51,7 @@ Mandatory Fields: age, dob, profession, address, hobby
 
   Sample Response:
   Status Code : 200 OK
-  "Added User Details Successfully"
+  { "message":"Added User Details Successfully" }
   
  4)**Update User Details API**: Is used to update details for a particular user
 
@@ -69,10 +69,10 @@ Mandatory Fields: age, dob, profession, address, hobby
 
   Sample Response:
   Status Code : 200 OK
-  "Updated Successfully"
+  {"message":"Updated Successfully"}
 
 5)**Delete User**: Is used to delete a particular user from the system & hence delete it's corresponding details
-Endpoint: /updateUserDetails
+Endpoint: /deleteUsers
 Request Header: Authorization: Bearer <access_token>
 Status Code : 200 OK
-"Deleted Successfully"
+{"message":"Deleted Successfully"}
