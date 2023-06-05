@@ -13,7 +13,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer, UserDetailsSerializer, UpdateUserDetailsSerializer
 from .models import User, UserDetail
 
-
+errObj = {
+  "error": {
+    "code": "",
+    "message": ""
+  }
+}
 # Create your views here.
 
 def getTokenDetails(bearer_token):
@@ -47,9 +52,14 @@ class MyTokenObtainPairView(TokenObtainPairView):
 def signup(request):
     user_data = JSONParser().parse(request)
     users_serializer = UserSerializer(data=user_data)
-    if(users_serializer.is_valid()):
-        user = users_serializer.save()
-        return JsonResponse("Signed up Successfully", status=201, safe=False)
+    try:
+        if(users_serializer.is_valid()):
+            users_serializer.save()
+            return JsonResponse("Signed up Successfully", status=201, safe=False)
+    except DatabaseError as e:
+        errObj['error']['code'] = "400"
+        errObj['error']['message'] = "User already exists"+str(e)
+        return JsonResponse(errObj, status=400, safe=False)
     return JsonResponse("Failed to add", status=400, safe=False)
 
 
@@ -64,16 +74,22 @@ def addUser(request):
         try:
             user_id, _ = getTokenDetails(bearer_token)
         except TokenError:
-            return JsonResponse("Authorization error", status=400, safe=False)
+            errObj['error']['code'] = "400"
+            errObj['error']['message'] = "Authorization error"
+            return JsonResponse(errObj, status=400, safe=False)
     user_details_serializer = UserDetailsSerializer(data=user_details_data, context={'userId': user_id})
     if(user_details_serializer.is_valid()):
         try:
             user_details_serializer.save()
             return JsonResponse("Added User Details Successfully", safe=False)
         except DatabaseError as e:
-             return JsonResponse("Unable to add details as details for the user already exists", status=400, safe=False)
+            errObj['error']['code'] = "400"
+            errObj['error']['message'] = "Unable to add details as details for the user already exists"
+            return JsonResponse(errObj, status=400, safe=False)
     errors = user_details_serializer.errors
-    return JsonResponse("Failed to add user details"+errors, status=400, safe=False)
+    errObj['error']['code'] = "400"
+    errObj['error']['message'] = "Failed to add user details: "+ errors 
+    return JsonResponse(errObj, status=400, safe=False)
 
 
 #Update User Profile API should be able to update any of these values profession, address, and hobby for a particular user with the help of a primary key.
@@ -87,18 +103,24 @@ def updateUser(request):
         try:
             user_id, _ = getTokenDetails(bearer_token)
         except TokenError:
+            errObj['error']['code'] = "400"
+            errObj['error']['message'] = "Authorization error"
             return JsonResponse("Authorization error", status=400, safe=False)
     try:
         user_details = UserDetail.objects.get(user=user_id)
     except UserDetail.DoesNotExist:
-        return JsonResponse("Unable to update as details for the user does not exist", status=400, safe=False) 
+        errObj['error']['code'] = "400"
+        errObj['error']['message'] = "Unable to update as details for the user does not exist"
+        return JsonResponse(errObj, status=400, safe=False) 
     user_details_serializer = UpdateUserDetailsSerializer(user_details, data=user_details_data)
     if(user_details_serializer.is_valid()):
         try:
             user_details_serializer.save()
             return JsonResponse("Updated Successfully", safe=False)
         except DatabaseError as e:
-             return JsonResponse("Failed to update "+str(e), status=400, safe=False)
+            errObj['error']['code'] = "400"
+            errObj['error']['message'] = "Failed to update "+str(e)
+            return JsonResponse(errObj, status=400, safe=False)
     errors = user_details_serializer.errors
     return JsonResponse("Failed to update "+errors, status=400, safe=False)
 
@@ -114,7 +136,9 @@ def deleteUser(request):
             try:
                 user_id, _ = getTokenDetails(bearer_token)
             except TokenError:
-                  return JsonResponse("Authorization error", status=400, safe=False)
+                errObj['error']['code'] = "400"
+                errObj['error']['message'] = "Authorization error"
+                return JsonResponse(errObj, status=400, safe=False)
         #code for deleting the any user by only supeuser
         '''if(userIdDict):
             if(user_is_superuser):
@@ -125,6 +149,8 @@ def deleteUser(request):
         try:     
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-             return JsonResponse("Unable to delete as user does not exist", status=400, safe=False)    
+            errObj['error']['code'] = "400"
+            errObj['error']['message'] = "Unable to delete as user does not exist"
+            return JsonResponse("Unable to delete as user does not exist", status=400, safe=False)    
         user.delete()
         return JsonResponse("Deleted Successfully", safe=False)
