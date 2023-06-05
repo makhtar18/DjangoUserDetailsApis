@@ -60,7 +60,10 @@ def signup(request):
         errObj['error']['code'] = "400"
         errObj['error']['message'] = "User already exists"+str(e)
         return JsonResponse(errObj, status=400, safe=False)
-    return JsonResponse("Failed to add", status=400, safe=False)
+    errors = users_serializer.errors
+    errObj['error']['code'] = "400"
+    errObj['error']['message'] = "Failed to add as: "+str(errors)
+    return JsonResponse(errObj, status=400, safe=False)
 
 
 #Add User Details API would accept age, date of birth, profession, address, and hobby for a particular user
@@ -88,7 +91,7 @@ def addUser(request):
             return JsonResponse(errObj, status=400, safe=False)
     errors = user_details_serializer.errors
     errObj['error']['code'] = "400"
-    errObj['error']['message'] = "Failed to add user details: "+ errors 
+    errObj['error']['message'] = "Failed to add user details as: "+ str(errors) 
     return JsonResponse(errObj, status=400, safe=False)
 
 
@@ -122,7 +125,9 @@ def updateUser(request):
             errObj['error']['message'] = "Failed to update "+str(e)
             return JsonResponse(errObj, status=400, safe=False)
     errors = user_details_serializer.errors
-    return JsonResponse("Failed to update "+errors, status=400, safe=False)
+    errObj['error']['code'] = "400"
+    errObj['error']['message'] = "Failed to update as: "+str(errors)
+    return JsonResponse(errObj, status=400, safe=False)
 
 
 #Delete User API should delete the user with the help of the primary key
