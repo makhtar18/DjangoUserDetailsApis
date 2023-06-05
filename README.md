@@ -69,7 +69,7 @@ Mandatory Fields: age, dob, profession, address, hobby
 
   Sample Response:
   Status Code : 200 OK
-  {"message":"Updated Successfully"}
+  {"message":"Updated User Details Successfully"}
 
 5)**Delete User**: Is used to delete a particular user from the system & hence delete it's corresponding details
 Endpoint: /deleteUsers
